@@ -73,13 +73,13 @@ Capper delivers instant, grounded, and on-brand support to Carton Caps users. Th
 **Backend**
 
 ```
-cd cc-backend
+cd livefront-backend
 
-python -m venv venv
+python3 -m venv venv
 
 source venv/bin/activate
 
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 
 uvicorn app.main:app --reload --port 8000
 ```
@@ -87,7 +87,7 @@ uvicorn app.main:app --reload --port 8000
 
 **Frontend**
 ```
-cd cc-frontend
+cd livefront-frontend
 
 npm install
 

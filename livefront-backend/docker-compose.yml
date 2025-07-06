@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  api:
+    build: .
+    volumes:
+      - .:/app:cached
+    environment:
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - GENAI_MODEL=${GENAI_MODEL}
+      - GENAI_TEMPERATURE=${GENAI_TEMPERATURE}
+      - GENAI_MAX_TOKENS=${GENAI_MAX_TOKENS}
+      - DATABASE_URL=${DATABASE_URL}
+    ports:
+      - '8000:8000'

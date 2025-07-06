@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Design Document</title>
+  <style>
+    /* Reset & globals */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, sans-serif;
+      background: #eef1f5;
+      color: #333;
+    }
+
+    a {
+      color: #1a73e8;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    h1,
+    h2 {
+      color: #222;
+    }
+
+    code {
+      background: #f4f6f8;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+
+    pre {
+      background: #f4f6f8;
+      padding: 1rem;
+      overflow-x: auto;
+      border-radius: 4px;
+    }
+
+    /* Layout */
+    header {
+      background: #ceca14;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+    }
+
+    header img.logo {
+      height: 32px;
+      margin-right: 1rem;
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+    }
+
+    .container {
+      display: flex;
+      height: calc(100vh - 64px);
+    }
+
+    nav {
+      width: 200px;
+      background: #fff;
+      border-right: 1px solid #ddd;
+      overflow-y: auto;
+    }
+
+    nav ul {
+      list-style: none;
+    }
+
+    nav li+li {
+      margin-top: .5rem;
+    }
+
+    nav a {
+      display: block;
+      padding: .75rem 1rem;
+      color: #333;
+    }
+
+    nav a.active,
+    nav a:hover {
+      background: #f0f2f5;
+    }
+
+    main {
+      flex: 1;
+      padding: 2rem;
+      overflow-y: auto;
+    }
+
+    .doc-panel {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+    }
+
+    section+section {
+      margin-top: 2rem;
+    }
+
+    h2 {
+      margin-bottom: 1rem;
+      border-bottom: 2px solid #ececec;
+      padding-bottom: .5rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+    }
+
+    th,
+    td {
+      border: 1px solid #ddd;
+      padding: .5rem;
+      text-align: left;
+    }
+
+    th {
+      background: #f7f7f7;
+    }
+
+    main .doc-panel ol,
+    main .doc-panel ul {
+      padding-left: 1.5rem;
+      /* indent content */
+      margin-left: 0;
+      /* remove any extra offset */
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+
+      nav {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+
+    <a href="/"><img src="/home.png" alt="Home" class="logo" /></a>
+    <h1>Capper - Carton Caps Design</h1> &nbsp;&nbsp;&nbsp;
+    <img src="/livefront.png" alt="LiveFront Logo" style="height:48px; object-fit:contain;" />&nbsp;&nbsp;
+    <img src="/logo.png" alt="Carton Caps Logo" style="height:48px; object-fit:contain;" />
+  </header>
+
+  <div class="container">
+    <nav>
+      <ul>
+        <li><a href="#api-contract">1. API Contract</a></li>
+        <li><a href="#introduction">1. Introduction</a></li>
+        <li><a href="#how-it-works">2. How Our POC Works</a></li>
+        <li><a href="#integration">3. Mobile App Integration</a></li>
+        <li><a href="#privacy">4. Privacy & Design</a></li>
+        <li><a href="#rationale">5. Thought Process</a></li>
+        <li><a href="#roadmap">6. Roadmap</a></li>
+        <li><a href="#future">7. Future Work and Enhancements</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <div class="doc-panel">
+        <section id="api-contract">
+          <h2>1. API Contract</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Route</th>
+                <th>Purpose</th>
+                <th>Request</th>
+                <th>Response</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>POST /chat</code></td>
+                <td>Send user message, get assistant reply.</td>
+                <td>
+                  <pre>{
+  "user_id": 1,
+  "conversation_id": null,
+  "message": "What can you help me with?"
+}</pre>
+                </td>
+                <td>
+                  <pre>{
+  "conversation_id": "abc123-uuid",
+  "reply": "I can help you with products, referrals, and FAQs.",
+  "recommendations": [ /* optional */ ]
+}</pre>
+                </td>
+              </tr>
+              <tr>
+                <td><code>GET /welcome/{user_id}</code></td>
+                <td>Return welcome/referral intro for that user.</td>
+                <td>–</td>
+                <td>
+                  <pre>{
+  "messages": [
+    "Remember: 20% of your purchase goes to Riverview Elementary!",
+    "Hi Anna! I’m Capper…"
+  ]
+}</pre>
+                </td>
+              </tr>
+              <tr>
+                <td><code>GET /users</code></td>
+                <td>List user profiles for selector.</td>
+                <td>–</td>
+                <td>
+                  <pre>[
+  { "id": 1, "name": "Anna Spears" },
+  { "id": 2, "name": "Bob Jones" }
+]</pre>
+                </td>
+              </tr>
+              <tr>
+                <td><code>GET /health</code></td>
+                <td>Liveness/health check.</td>
+                <td>–</td>
+                <td>
+                  <pre>{ "status": "ok" }</pre>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+        <section id="introduction">
+          <h2>1. Introduction</h2>
+          <p>
+            This POC is a live demonstration of how Carton Caps can deliver instant,
+            personalised support through an in-app chat assistant.
+            Powered by an open-source language model and Retrieval-Augmented Generation (RAG),
+            the bot greets each customer by name, surfaces school-specific referral benefits,
+            and answers product or programme questions with facts drawn directly from Carton Caps’ catalogue and FAQ
+            repository.
+          </p>
+          <h3 style="margin-top:1rem;">Key Features</h3><br />
+          <ul>
+            <li><strong>Helpful & on-brand –</strong> uses a friendly “Capper” persona and never strays beyond
+              Carton Caps-approved knowledge.</li>
+            <li><strong>Grounded answers –</strong> every reply is composed only after the bot retrieves the most
+              relevant product descriptions, referral rules and FAQs from the embedded database.</li>
+            <li><strong>Multi-turn memory –</strong> conversation ID keeps context so users can ask follow-up questions
+              naturally.</li>
+            <li><strong>Lightweight but swappable stack –</strong> TinyLlama runs locally for demo speed; a single env
+              var lets us upgrade to a larger cloud model for production.</li>
+            <li><strong>Plug-and-play API –</strong> three endpoints (/users, /welcome/{id}, /chat) make it trivial to
+              integrate with the existing Carton Caps mobile app.</li>
+            <li><strong>Privacy first –</strong> no personal data leaves the Carton Caps boundary; chat logs are
+              encrypted and time-limited.</li>
+          </ul>
+          <p>
+        </section>
+        <section id="how-it-works">
+          <h2>2. How Our POC Works</h2>
+          <p>
+            The Carton Caps AI Chat POC provides a fully interactive, grounded, and context-aware chat assistant. Here’s
+            how it works from end to end:
+          </p>
+          <ol>
+            <li>
+              <b>Profile Selection:</b> On app load, users select their profile (from <code>GET /users</code>), which
+              determines the personalization of the chat.
+            </li>
+            <li>
+              <b>Personalized Welcome:</b> The UI calls <code>GET /welcome/{user_id}</code> to show a custom greeting
+              and any active referral benefits.
+            </li>
+            <li>
+              <b>Conversational API:</b> Every user question is sent to <code>POST /chat</code> along with their
+              conversation ID. The backend keeps multi-turn context.
+            </li>
+            <li>
+              <b>Retrieval-Augmented Generation (RAG):</b> For each message, the backend finds the most relevant product
+              descriptions, referral rules, and FAQ snippets by semantic search over vector embeddings.
+            </li>
+            <li>
+              <b>LLM Generation:</b> The system builds a prompt (user, history, retrieved context) and sends it to an
+              open-source LLM (TinyLlama or similar) to produce a safe, brand-aligned reply.
+            </li>
+            <li>
+              <b>Result Delivery:</b> The response, plus any structured recommendations (for product queries), is
+              returned to the UI and displayed to the user as a natural conversation.
+            </li>
+            <li>
+              <b>Persistence & Privacy:</b> All conversation turns are logged (locally, never sent offsite). No user PII
+              or school data ever leaves the system boundary.
+            </li><br />
+          </ol>
+          <p>
+            The architecture is designed for modularity—swap in larger LLMs, vector databases, or analytics as the
+            platform scales.
+          </p>
+        </section>
+        <section id="integration">
+          <h2>3. Mobile-App Integration</h2>
+          <h3 style="margin-top:1rem;">3.1 High-Level UX Flow</h3><br />
+          <ol>
+            <li><strong>Bootstrap profiles</strong> – On app launch or account switch, call
+              <code>GET /users</code> to retrieve the user’s saved Carton Caps profiles.
+            </li>
+
+            <li><strong>Select profile → Welcome</strong> –
+              When the user taps a profile, immediately call
+              <code>GET /welcome/{user_id}</code> and render the returned greeting/
+              referral-benefit messages as the first assistant bubbles.
+            </li>
+
+            <li><strong>Live conversation</strong> –
+              For every send:
+              <ol type="a" style="margin-left:1.25rem;">
+                <li>Build the payload<br />
+                  <code>{ user_id, conversation_id, message }</code>
+                </li>
+                <li>POST to <code>/chat</code>.</li>
+                <li>Stream or display <code>reply</code>; if the JSON contains
+                  <code>recommendations</code>, render product cards beneath the bubble
+                  (image, name, price, “Add to cart” CTA).
+                </li>
+                <li>Persist <code>conversation_id</code> for the next turn.</li>
+              </ol>
+            </li>
+
+            <li><strong>End-of-session persistence</strong> –
+              The API remembers context server-side; the mobile client only needs to
+              store the last <code>conversation_id</code> per profile (e.g. AsyncStorage
+              or Keychain).</li>
+          </ol>
+
+          <h3 style="margin-top:1.5rem;">3.2 Network & Caching Best Practices</h3><br />
+          <ul>
+            <li>💾 Cache <code>/users</code> and <code>/welcome/{id}</code> for the
+              session; they change rarely.</li>
+            <li>⏱ Set a 15 s timeout on <code>/chat</code>; show a spinner and allow the
+              user to cancel/resend.</li>
+            <li>📶 Offline mode: if no network, disable the input field and show a
+              “capper-offline” banner; queue unsent messages locally.</li>
+          </ul>
+
+          <h3 style="margin-top:1.5rem;">3.3 Deep-Link</h3><br />
+          <ul>
+            <li><strong>Referral deep-link</strong><br />
+              <code>cartoncaps://chat?uid=42&promo=ABC123</code> → open chat, pre-select
+              profile 42, pre-fill “I have a referral code ABC123”.
+            </li>
+          </ul>
+
+          <h3 style="margin-top:1.5rem;">3.4 Error / Retry Matrix</h3><br />
+          <table>
+            <thead>
+              <tr>
+                <th>Status</th>
+                <th>Caught by client</th>
+                <th>UX Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>4xx (bad payload)</td>
+                <td>axios error.response</td>
+                <td>Toast “Hmm, that didn’t look right – please rephrase.”</td>
+              </tr>
+              <tr>
+                <td>429 (rate-limit)</td>
+                <td>axios error.response</td>
+                <td>Disable input 30 s, show countdown.</td>
+              </tr>
+              <tr>
+                <td>5xx (LLM/RAG failure)</td>
+                <td>axios error.response OR timeout</td>
+                <td>Insert fallback bubble: “Capper is thinking too hard, try again soon.”</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="privacy">
+          <h2>4. Privacy Design/Implementation</h2>
+          <ul>
+            <li>Chat payloads contain only {user_id, conversation_id, message}. 
+              PII (name, school) fetched from DB after auth; never sent to external APIs.</li>
+            <li>All LLMs run in VPC (TinyLlama local, Llama-3 on Trn1)</li>
+            <li>RAG ensures grounding in real product/FAQ data.</li>
+            <li>Out‐of‐scope queries elicit a polite refusal.</li>
+            <li>Pilot: keep transcripts 30 days in SQLite for debugging, then purge. Make retention term configurable (ENV var)</li>
+            <li>“Erase my chat history” button planned in settings.</li>
+          </ul>
+        </section>
+
+        <section id="rationale">
+          <h2>5. Thought Process</h2>
+
+          <h3 style="margin-top:1rem;">5.1 Guiding Principles</h3><br />
+          <ul>
+            <li><strong>Privacy-first</strong> – Keep user data on-device / in-house; never ship PII to third-party
+              APIs.</li>
+            <li><strong>Fast iteration</strong> – Favor composable, easily swappable modules (LLM, vector store, DB) so
+              we can test upgrades weekly.</li>
+            <li><strong>Edge friendliness</strong> – Run a small model locally for demo & QA; make it trivial to swap to
+              a larger hosted model for prod.</li>
+            <li><strong>Explainability</strong> – Surface the retrieved <em>knowledge snippets</em> to debug
+              hallucinations and measure grounding quality.</li>
+          </ul>
+
+          <h3 style="margin-top:1.5rem;">5.2 Key Technical Decisions</h3><br />
+          <table>
+            <thead>
+              <tr>
+                <th>Decision</th>
+                <th>Why now?</th>
+                <th>Trade-offs</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>FastAPI + async</strong></td>
+                <td>Python native, async I/O for embeddings & DB; hot-reload for rapid prototyping.</td>
+                <td>Python GIL can bottleneck CPU-heavy ops → we delegate heavy compute to <code>torch</code> / GPU.
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Sentence-Transformer (<code>all-MiniLM-L6</code>)</strong></td>
+                <td>7 M params ⇒ 60 ms embedding on laptop; good semantic recall for FAQ/product text.</td>
+                <td>Slightly lower accuracy vs. larger models; will revisit with <code>bge-base</code> once we add
+                  multilingual SKUs.</td>
+              </tr>
+              <tr>
+                <td><strong>In-memory FAISS index</strong></td>
+                <td>No extra infra; instant rebuild at startup.</td>
+                <td>Volatile; cold-start rebuild ≈ 120 ms / 10 docs (fine for PoC).</td>
+              </tr>
+              <tr>
+                <td><strong>SQLite</strong></td>
+                <td>Zero config, file-level backup, excellent for local demos.</td>
+                <td>Single-writer limitation – will move to Postgres once concurrent writes matter.</td>
+              </tr>
+              <tr>
+                <td><strong>Local TinyLlama 1.1 B-Chat</strong></td>
+                <td>Runs on MacBook M-series without quantization; keeps data on developer machine.</td>
+                <td>~2–3 s latency. Future prod tier will point to GPT-4o or Claude 3 Haiku via feature flag.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3 style="margin-top:1.5rem;">5.3 Open Questions</h3><br />
+          <ul>
+            <li>Do we persist entire chat transcripts forever, or roll off after 90 days?</li>
+            <li>How do we surface model mis-alignment (e.g., “I’m not allowed to recommend…”)? –> add forced
+              sanity prompts + ironically negative unit tests.</li>
+            <li>Do we let Capper remember user preferences (e.g., “Peanut-free”) across sessions?
+              –> yes, but only if user opts in.</li>
+            <li>Should the assistant auto-flag suspicious self-referrals in real-time, or defer to a nightly fraud job?
+              -> Real-time needs an extra service tier + stricter latency SLO.</li>
+          </ul>
+        </section>
+
+        <section id="roadmap">
+          <h2>6. Roadmap</h2>
+          <p>
+            Our POC is built for immediate business value but designed to scale. Below is the evolution path:
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th>Phase</th>
+                <th>Features & Milestones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><b>Pilot (Now)</b></td>
+                <td>
+                  <ul>
+                    <li>FastAPI backend with async endpoints</li>
+                    <li>Open-source LLM (TinyLlama/Mistral) on CPU/GPU, local RAG</li>
+                    <li>React/Next.js UI, multi-user support, SQLite for demo</li>
+                    <li>Semantic retrieval over products and FAQs</li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
+                <td><b>Beta (Staging)</b></td>
+                <td>
+                  <ul>
+                    <li>Swap to Llama-3-8B/Mixtral, cloud-hosted inference</li>
+                    <li>Vector DB (pgvector/Faiss) for fast scalable retrieval</li>
+                    <li>Analytics dashboard, admin moderation tools</li>
+                    <li>First mobile SDK integration</li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
+                <td><b>Production</b></td>
+                <td>
+                  <ul>
+                    <li>Llama-3-70B/Mixtral 8x22B, context window up to 32k</li>
+                    <li>Fully managed cloud/NPU hosting (AWS/Azure/GCP)</li>
+                    <li>SOC2, GDPR, and CCPA compliance</li>
+                    <li>Personalization and cross-session memory</li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
+                <td><b>Premium/Pro Tier</b></td>
+                <td>
+                  <ul>
+                    <li>API gateway for GPT-4o/Claude 3 for high-value queries</li>
+                    <li>Real-time feedback/flagging, advanced analytics</li>
+                    <li>User-level vector memory and long-term preferences</li>
+                  </ul>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p>
+            This staged approach allows Carton Caps to start simple, gather user data and feedback, and scale
+            capabilities with real-world needs.
+          </p><br /><br />
+          <section id="future">
+            <h2>7. Future Work and Enhancements</h2>
+
+            <h3 style="margin-top:1.5rem;">7.1 Technical Enhancements</h3><br />
+            <ul>
+              <li>
+                <strong>Smarter Retrieval:</strong>
+                Integrate more advanced semantic search (e.g., <em>bge-large</em>, <em>ColBERT</em>, or hybrid
+                keyword+embedding approaches) for better relevance, especially as product/FAQ database grows.
+              </li>
+              <li>
+                <strong>Personalized Memory:</strong>
+                Introduce persistent, user-specific “vector memory” so Capper can recall preferences, past
+                purchases, or flagged allergies—*with opt-in and privacy safeguards*.
+              </li>
+              <li>
+                <strong>Deeper Context Window:</strong>
+                Upgrade to larger-context LLMs (e.g., Llama-3-70B, Mixtral 8x22B, GPT-4o-128k) so the assistant can
+                reference longer chat histories and richer product catalogs.
+              </li>
+              <li>
+                <strong>Conversational Analytics:</strong>
+                Add dashboards for monitoring user engagement, unresolved queries, and “hallucination” rates; feed these
+                insights back into RAG and LLM fine-tuning.
+              </li>
+              <li>
+                <strong>Multilingual Support:</strong>
+                Support Spanish and other languages using multilingual embeddings and fine-tuned LLMs.
+              </li>
+              <li>
+                <strong>Human Escalation:</strong>
+                Build-in fallback escalation to a live agent (chat or phone) if the user gets frustrated or the AI is
+                unsure.
+              </li>
+              <li>
+                <strong>Accessibility:</strong>
+                Enhance UI for screen readers, high-contrast, and mobile-first usability.
+              </li>
+              <li>
+                <strong>App/Platform Integrations:</strong>
+                Publish React Native and Flutter SDKs; offer API hooks for in-app deep links and push notification
+                triggers.
+              </li>
+              <li>
+                <strong>Security & Compliance:</strong>
+                Formalize GDPR/SOC2 controls, encrypted at-rest data, and automatic log expiry for privacy.
+              </li>
+              <li>
+                <strong>Continuous Evaluation:</strong>
+                Deploy evaluation pipelines with real users and adversarial prompts to continuously benchmark LLM
+                accuracy, safety, and groundedness.
+              </li>
+            </ul>
+
+            <h3 style="margin-top:1.5rem;">7.2 Product & User Experience Enhancements</h3><br />
+            <ul>
+              <li>
+                <strong>Natural Multi-Turn Dialogues:</strong>
+                Refine the assistant’s ability to manage complex conversations, track “shopping carts,” and clarify
+                ambiguous user requests.
+              </li>
+              <li>
+                <strong>Interactive Elements:</strong>
+                Support for quick replies, rich cards (images, CTAs), and dynamic forms (collect allergy info, grade,
+                etc).
+              </li>
+              <li>
+                <strong>Proactive Outreach:</strong>
+                Enable Capper to nudge users about expiring offers, referral bonuses, or program updates.
+              </li>
+              <li>
+                <strong>Fraud & Abuse Detection:</strong>
+                Add real-time monitoring for referral abuse, self-referrals, and spam using both rule-based and ML
+                models.
+              </li>
+              <li>
+                <strong>Feedback Loops:</strong>
+                Let users rate answers or flag mistakes; use this feedback for LLM/RAG retraining.
+              </li>
+              <li>
+                <strong>Enterprise Customization:</strong>
+                Allow Carton Caps business clients (e.g., school districts) to upload custom FAQs, product lists, or
+                policies.
+              </li>
+            </ul>
+
+            <h3 style="margin-top:1.5rem;">7.3 Research & Innovation</h3><br />
+            <ul>
+              <li>
+                <strong>Open-Source LLM Fine-Tuning:</strong>
+                Develop a continuous training pipeline to fine-tune models on anonymized, consented Carton Caps
+                conversations.
+              </li>
+              <li>
+                <strong>RAG+LLM Orchestration:</strong>
+                Experiment with advanced hybrid approaches (e.g., multi-step tool use, agentic planning, dynamic prompt
+                routing).
+              </li>
+              <li>
+                <strong>AI Ethics & Explainability:</strong>
+                Build tools for admins to trace why a specific answer was given (“which FAQ/rule was used?”) and how
+                user data is used.
+              </li>
+            </ul>
+
+            <h3 style="margin-top:1.5rem;">7.4 Evolution Path (“Roadmap” Summary)</h3><br />
+            <ol>
+              <li>
+                <b>Pilot & Internal QA:</b> Refine baseline RAG+LLM, collect usage data, fix edge-case bugs.
+              </li>
+              <li>
+                <b>Cloud & Mobile Scale:</b> Migrate to cloud LLMs and scalable vector DBs for thousands of users;
+                launch full mobile integration.
+              </li>
+              <li>
+                <b>Enterprise & Compliance:</b> Add multi-tenancy, school district white-labeling, and robust
+                privacy/audit controls.
+              </li>
+              <li>
+                <b>Premium & Pro Tiers:</b> Support large context windows, plug into GPT-4o/Claude-3, enable AI
+                “copilot” and voice interface options.
+              </li>
+            </ol>
+
+            <p style="margin-top:1rem;">
+              <strong>Summary:</strong> The POC is a springboard for a best-in-class conversational commerce platform.
+              The modular architecture, privacy focus, and deep product/FAQ integration lay a foundation for rapid
+              feature growth and differentiated user experiences in K–12 e-commerce and beyond.
+            </p>
+          </section>
+      </div>
+    </main>
+  </div>
+</body>
+
+</html>
