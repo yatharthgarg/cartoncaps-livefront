@@ -107,5 +107,5 @@ Make sure both backend server is running on local
 #### Documentation
 ![Documentation](https://github.com/yatharthgarg/cartoncaps-livefront/blob/main/livefront-frontend/public/Documentation.png)
 
-**NOTE**
+**NOTE** - 
 Please go to the **?** logo on the top-right screen to access the design documentation
