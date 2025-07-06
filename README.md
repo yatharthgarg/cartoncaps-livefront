@@ -1,95 +1,95 @@
-Carton Caps Conversational AI Assistant
 
-Overview
+# Carton Caps Conversational AI (Capper)
 
-This repository hosts the backend service and API implementation for CapConnect, the conversational AI assistant for Carton Caps. CapConnect provides personalized product recommendations, handles FAQs, and explains the referral program, all within a conversational user interface powered by an open-source LLM and Retrieval-Augmented Generation (RAG).
+    
 
-⸻
+## Overview
 
-Features
-	•	Conversational AI: Personalized and engaging interactions with customers.
-	•	Product Recommendations: Smart, contextually relevant product suggestions.
-	•	Referral Program Integration: Clear communication of benefits and rules.
-	•	FAQ Handling: Accurate answers based on pre-defined FAQs and rules.
-	•	Context Management: Maintains conversational context for seamless user experience.
-	•	Scalable Architecture: Lightweight for prototyping with clear path for scaling in production.
+  
 
-⸻
+Capper delivers instant, grounded, and on-brand support to Carton Caps users. The assistant provides product recommendations, referral program guidance, and FAQ answers, all within Carton Caps-approved content boundaries.
 
-Technology Stack
-	•	Backend: FastAPI, Python
-	•	Database: SQLite (async via aiosqlite)
-	•	Embeddings & Retrieval: Sentence-Transformers (MiniLM), FAISS
-	•	LLM: TinyLlama (for prototype/demo purposes)
-	•	Frontend: Next.js, React, Tailwind CSS
+  
 
-⸻
+-  **Personalized:** Greets users by name and school, and provides referral benefit info.
 
-API Contract
+-  **Product-aware:** Surfaces recommendations from the actual product catalog.
 
-Route	Purpose	Request Example	Response Example
-POST /chat	Send user message, get assistant reply	{ "user_id": 1, "conversation_id": null, "message": "What can you help me with?" }	{ "conversation_id": "abc123-uuid", "reply": "I can help you with products, referrals, and FAQs.", "recommendations": [/* optional */] }
-GET /welcome/{user_id}	Return welcome/referral intro for user	-	{ "messages": [ "Remember: 20% of your purchase goes to Riverview Elementary!", "Hi Anna! I’m Capper…" ] }
-GET /users	List user profiles	-	[ { "id": 1, "name": "Anna Spears" }, { "id": 2, "name": "Bob Jones" } ]
-GET /health	Health/Liveness Check	-	{ "status": "ok" }
+-  **RAG-powered:** Uses retrieval-augmented generation for reliable answers.
+
+-  **Plug-and-play:** Integrates easily with web/mobile apps.
+
+-  **Privacy-first:** No PII ever leaves the Carton Caps infrastructure.
+
+  
+
+---
+
+  
+
+## Features
+
+  
+
+- Product recommendations, prices, and descriptions
+
+- FAQ and referral rule grounding
+
+- Multi-turn context (conversation memory)
+
+- Personalized welcome with dynamic referral info
+
+- Modular backend (easy to swap LLMs)
+
+- Fast, modern Next.js frontend
+
+  
+
+---
 
 
-⸻
+## API Contract
 
-Setup and Running Locally
 
-Prerequisites
-	•	Python 3.9+
-	•	Node.js 18+
+| Route                    | Purpose                   | Request Example                                            | Response Example           |
+|--------------------------|---------------------------|------------------------------------------------------------|----------------------------|
+| `POST /chat`             | Send user message, get assistant reply.         | `{ "user_id": 1, "conversation_id": null, "message": "What can you help me with?" }`                        | `{ "conversation_id": "abc123-uuid", "reply": "I can help you with products, referrals, and FAQs.!" }`    |
+| `GET /users`             | List user profiles for selector.        | –                                                          | `[{"id":1,"name":"Anna"},{ "id": 2, "name": "Bob Jones" }...]` |
+| `GET /welcome/{user_id}` | Return welcome/referral intro for that user.  | –                                                          | `{ "messages": ["Hi {{user}}! I'm Capper, your personal Carton Caps assistant. Your purchases from us help to fund critical school programming efforts for {{school}}. Remember that a portion of your purchase goes to {{school}}!!"] }`  |
+ `GET /health` | Liveness/health check.  | –                                                          | `{ "status": "ok" }`  |
 
-Backend Setup
+---
 
-# Clone repository
-git clone <repo_url>
-cd carton-caps-backend
+## System Design Architecture
 
-# Install dependencies
+
+[System Design for Capper](https://excalidraw.com/#json=pVshaduh8uat7MxtBVWDE,Uv-TT42t_YDxBEWMw1p6gw)
+
+
+## Quick Start
+
+  
+
+**Backend**
+
+```
+cd cc-backend
+
+python -m venv venv
+
+source venv/bin/activate
+
 pip install -r requirements.txt
 
-# Run server
-uvicorn app.main:app --reload
+uvicorn app.main:app --reload --port 8000
+```
+  
 
-Frontend Setup
+**Frontend**
+```
+cd cc-frontend
 
-cd frontend
 npm install
+
 npm run dev
-
-
-⸻
-
-Key Architectural Decisions
-	•	FastAPI with Async: Enables efficient non-blocking operations, suitable for real-time interaction.
-	•	SQLite + aiosqlite: Ideal for lightweight prototypes and demos with async support.
-	•	Sentence-Transformers + FAISS: Provides quick semantic search and retrieval.
-	•	TinyLlama (Local): Chosen for quick iteration and demonstration purposes.
-
-⸻
-
-Privacy and Data Security
-	•	User data remains local.
-	•	Minimal personal information is used (first name, school name only).
-	•	Conversation logs encrypted and stored temporarily.
-
-⸻
-
-Future Roadmap
-	•	Phase 1 (Demo): TinyLlama, local FAISS & SQLite
-	•	Phase 2 (Internal Beta): Cloud-hosted LLM, pgvector for embeddings
-	•	Phase 3 (Production): High-scale cloud infrastructure with advanced LLM (Llama-3-70B or Mixtral)
-	•	Phase 4 (Premium): Advanced personalization and state-of-the-art LLM usage (GPT-4o)
-
-⸻
-
-Contributing
-
-Feel free to fork, open issues, and submit pull requests to enhance CapConnect!
-
-⸻
-
-© Carton Caps
+```
