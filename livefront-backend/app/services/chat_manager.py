@@ -18,13 +18,7 @@ class ChatManager:
     async def initialize(self, session: AsyncSession):
         await self.rag.build_index(session)
 
-    async def handle(
-        self,
-        session: AsyncSession,
-        user_id: int,
-        conversation_id: Optional[str],
-        message: str
-    ) -> Tuple[str, str]:
+    async def handle(self, session: AsyncSession, user_id: int, conversation_id: Optional[str], message: str) -> Tuple[str, str]:
         user = await get_user(session, user_id)
         if not user:
             raise ValueError("User not found")
@@ -33,6 +27,21 @@ class ChatManager:
         conv_id = conversation_id or str(uuid.uuid4())
         history = await get_conversation_history(session, conv_id)
 
+        hits = self.rag.retrieve(message, top_k=settings.K_NEIGHBORS)
+        history = await get_conversation_history(session, conv_id)
+
+        faq_answer = self.rag.match_faq(message)
+        if faq_answer:
+            await add_message(session, user_id, conv_id, "user", message)
+            await add_message(session, user_id, conv_id, "assistant", faq_answer)
+            return conv_id, faq_answer
+
+        rule_text = self.rag.match_rule(message)
+        if rule_text:
+            await add_message(session, user_id, conv_id, "user", message)
+            await add_message(session, user_id, conv_id, "assistant", rule_text)
+            return conv_id, rule_text
+        
         hits = self.rag.retrieve(message, top_k=settings.K_NEIGHBORS)
         intent_hit = next(
             (

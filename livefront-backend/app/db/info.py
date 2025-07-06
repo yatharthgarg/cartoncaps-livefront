@@ -127,13 +127,3 @@ REFERRAL_FAQS = [
         )
     }
 ]
-
-@router.get("/faqs")
-async def get_faqs():
-    """Return the full list of referral FAQs."""
-    return {"faqs": REFERRAL_FAQS}
-
-@router.get("/referral-rules")
-async def get_rules():
-    """Return the list of referral rules."""
-    return {"rules": REFERRAL_RULES}
