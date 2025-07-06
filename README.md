@@ -91,3 +91,21 @@ python -m pytest -q
 **API Docs**
 Make sure both backend server is running on local
 [Swagger API Docs](http://localhost:8000/docs#/default)
+
+
+## Images of the product
+
+#### Loading the app
+![Welcome](https://github.com/yatharthgarg/cartoncaps-livefront/blob/main/livefront-frontend/public/Welcome%20screen.png)
+
+#### Asking for product recommendation
+![Product Recs](https://github.com/yatharthgarg/cartoncaps-livefront/blob/main/livefront-frontend/public/Product%20recs.png)
+
+#### Asking about referral
+![Referral](https://github.com/yatharthgarg/cartoncaps-livefront/blob/main/livefront-frontend/public/FAQ.png)
+
+#### Documentation
+![Documentation](https://github.com/yatharthgarg/cartoncaps-livefront/blob/main/livefront-frontend/public/Documentation.png)
+
+**NOTE**
+Please go to the **?** logo on the top-right screen to access the design documentation
