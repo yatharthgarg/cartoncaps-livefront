@@ -34,15 +34,15 @@ async def test_default_flow(monkeypatch):
     monkeypatch.setattr(cm_mod, "get_conversation_history", AsyncMock(return_value=[]))
     monkeypatch.setattr(cm_mod, "add_message", AsyncMock())
 
-    hits = [
-        {"type": "product", "id": 100, "meta": {"name": "X", "price": 1.0, "description": "d1"}},
-        {"type": "faq",     "meta": {"question": "Q", "answer": "A"}}
-    ]
     class DummyRag:
+        def match_faq(self, message):
+            return None
+        def match_rule(self, message):
+            return None
         def retrieve(self, query, top_k=None):
             return [
-                {"type":"product","id":100,"meta":{"name":"X","price":1.0,"description":"d1"}},
-                {"type":"faq",    "meta":{"question":"Q","answer":"A"}}
+                {"type": "product", "id": 100, "meta": {"name": "X", "price": 1.0, "description": "d1"}},
+                {"type": "faq",     "meta": {"question": "Q", "answer": "A"}}
             ]
     mgr.rag = DummyRag()
 
@@ -50,11 +50,11 @@ async def test_default_flow(monkeypatch):
         def generate(self, prompt):
             return "LLM reply"
     mgr.llm = DummyLLM()
+
     conv_id, reply = await mgr.handle("dummy_session", user_id=1, conversation_id=None, message="hello")
 
     uuid.UUID(conv_id)
     assert reply == "LLM reply"
-
     assert cm_mod.ChatManager._recommendation_state[conv_id] == [100]
 
 @pytest.mark.asyncio
@@ -67,19 +67,24 @@ async def test_more_flow(monkeypatch):
     monkeypatch.setattr(cm_mod, "get_conversation_history", AsyncMock(return_value=[]))
     monkeypatch.setattr(cm_mod, "add_message", AsyncMock())
 
-    hits = [
-        {"type": "product", "id": 100, "meta": {"name": "X", "price": 1.0}},
-        {"type": "product", "id": 200, "meta": {"name": "Y", "price": 2.0}}
-    ]
-    class DummyRag2:
+    class DummyRag:
+        def match_faq(self, message):
+            return None
+        def match_rule(self, message):
+            return None
         def retrieve(self, query, top_k=None):
-            return hits
-    mgr.rag = DummyRag2()
+            return [
+                {"type": "product", "id": 100, "meta": {"name": "X", "price": 1.0}},
+                {"type": "product", "id": 200, "meta": {"name": "Y", "price": 2.0}}
+            ]
+    mgr.rag = DummyRag()
 
-    conv_id, reply = await mgr.handle("dummy_session",
-                                      user_id=1,
-                                      conversation_id=conv,
-                                      message="more recommendations please")
+    conv_id, reply = await mgr.handle(
+        "dummy_session",
+        user_id=1,
+        conversation_id=conv,
+        message="more recommendations please"
+    )
 
     assert conv_id == conv
     assert "- Y ($2.00)" in reply
