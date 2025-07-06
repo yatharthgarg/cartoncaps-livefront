@@ -169,7 +169,6 @@
   <div class="container">
     <nav>
       <ul>
-        <li><a href="#api-contract">1. API Contract</a></li>
         <li><a href="#introduction">1. Introduction</a></li>
         <li><a href="#how-it-works">2. How Our POC Works</a></li>
         <li><a href="#integration">3. Mobile App Integration</a></li>
@@ -182,71 +181,6 @@
 
     <main>
       <div class="doc-panel">
-        <section id="api-contract">
-          <h2>1. API Contract</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>Route</th>
-                <th>Purpose</th>
-                <th>Request</th>
-                <th>Response</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><code>POST /chat</code></td>
-                <td>Send user message, get assistant reply.</td>
-                <td>
-                  <pre>{
-  "user_id": 1,
-  "conversation_id": null,
-  "message": "What can you help me with?"
-}</pre>
-                </td>
-                <td>
-                  <pre>{
-  "conversation_id": "abc123-uuid",
-  "reply": "I can help you with products, referrals, and FAQs.",
-  "recommendations": [ /* optional */ ]
-}</pre>
-                </td>
-              </tr>
-              <tr>
-                <td><code>GET /welcome/{user_id}</code></td>
-                <td>Return welcome/referral intro for that user.</td>
-                <td>–</td>
-                <td>
-                  <pre>{
-  "messages": [
-    "Remember: 20% of your purchase goes to Riverview Elementary!",
-    "Hi Anna! I’m Capper…"
-  ]
-}</pre>
-                </td>
-              </tr>
-              <tr>
-                <td><code>GET /users</code></td>
-                <td>List user profiles for selector.</td>
-                <td>–</td>
-                <td>
-                  <pre>[
-  { "id": 1, "name": "Anna Spears" },
-  { "id": 2, "name": "Bob Jones" }
-]</pre>
-                </td>
-              </tr>
-              <tr>
-                <td><code>GET /health</code></td>
-                <td>Liveness/health check.</td>
-                <td>–</td>
-                <td>
-                  <pre>{ "status": "ok" }</pre>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
         <section id="introduction">
           <h2>1. Introduction</h2>
           <p>
@@ -352,11 +286,11 @@
 
           <h3 style="margin-top:1.5rem;">3.2 Network & Caching Best Practices</h3><br />
           <ul>
-            <li>💾 Cache <code>/users</code> and <code>/welcome/{id}</code> for the
+            <li>Cache <code>/users</code> and <code>/welcome/{id}</code> for the
               session; they change rarely.</li>
-            <li>⏱ Set a 15 s timeout on <code>/chat</code>; show a spinner and allow the
+            <li>Set a 15 s timeout on <code>/chat</code>; show a spinner and allow the
               user to cancel/resend.</li>
-            <li>📶 Offline mode: if no network, disable the input field and show a
+            <li>Offline mode: if no network, disable the input field and show a
               “capper-offline” banner; queue unsent messages locally.</li>
           </ul>
 
