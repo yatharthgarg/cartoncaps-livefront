@@ -17,11 +17,6 @@ Capper delivers instant, grounded, and on-brand support to Carton Caps users. Th
 
 -  **RAG-powered:** Uses retrieval-augmented generation for reliable answers.
 
--  **Plug-and-play:** Integrates easily with web/mobile apps.
-
--  **Privacy-first:** No PII ever leaves the Carton Caps infrastructure.
-
-  
 
 ---
 
@@ -39,11 +34,8 @@ Capper delivers instant, grounded, and on-brand support to Carton Caps users. Th
 
 - Personalized welcome with dynamic referral info
 
-- Modular backend (easy to swap LLMs)
-
 - Fast, modern Next.js frontend
 
-  
 
 ---
 
@@ -68,28 +60,19 @@ Capper delivers instant, grounded, and on-brand support to Carton Caps users. Th
 
 ## Quick Start
 
-  
-
 **Backend**
 
-```
+```bash
 cd livefront-backend
-
 python3 -m venv venv
-
 source venv/bin/activate
-
 pip3 install -r requirements.txt
-
 uvicorn app.main:app --reload --port 8000
 ```
-  
 
 **Frontend**
-```
+```bash
 cd livefront-frontend
-
 npm install
-
 npm run dev
 ```
