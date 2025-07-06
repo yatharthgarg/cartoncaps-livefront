@@ -63,7 +63,7 @@ Capper delivers instant, grounded, and on-brand support to Carton Caps users. Th
 ## System Design Architecture
 
 
-[System Design for Capper](https://excalidraw.com/#json=pVshaduh8uat7MxtBVWDE,Uv-TT42t_YDxBEWMw1p6gw)
+![System Design Arch](https://github.com/yatharthgarg/cartoncaps-livefront/blob/main/livefront-frontend/public/System%20Design.excalidraw.png)
 
 
 ## Quick Start
