@@ -19,7 +19,7 @@ class LLMService:
 
         logger.info(f"Loaded model on device: {self.device}")
 
-    async def generate(self, prompt: str) -> str:
+    def generate(self, prompt: str) -> str:
         """
         Asynchronously generate a completion for the given prompt.
         Returns the full generated text (with prompt echo stripped).

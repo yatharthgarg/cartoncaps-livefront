@@ -8,6 +8,7 @@ from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.database import AsyncSessionLocal
 from app.db.crud import get_user
+from app.services.chat_manager import ChatManager
 from app.config import settings
 
 app = FastAPI(title="Carton Caps AI Chatbot")
@@ -19,7 +20,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
+chat_mgr = ChatManager()  
 app.include_router(users_router)
 app.include_router(chat_router)
 
@@ -27,6 +28,8 @@ app.include_router(chat_router)
 async def on_startup():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+    async with AsyncSessionLocal() as session:
+        await chat_mgr.initialize(session)
     print("✅ Database tables ensured, ready to serve.")
 
 @app.get("/health")

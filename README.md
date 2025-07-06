@@ -76,3 +76,18 @@ cd livefront-frontend
 npm install
 npm run dev
 ```
+**Testing**
+```bash
+cd cartoncaps-livefront/livefront-backend
+python3 -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip
+pip install -r requirements.txt
+
+pip install -e .
+python -m pytest -q
+```
+
+**API Docs**
+Make sure both backend server is running on local
+[Swagger API Docs](http://localhost:8000/docs#/default)
