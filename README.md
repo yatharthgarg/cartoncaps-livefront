@@ -34,7 +34,7 @@ Capper delivers instant, grounded, and on-brand support to Carton Caps users. Th
 
 - Personalized welcome with dynamic referral info
 
-- Fast, modern Next.js frontend
+- React + Tailwind for UI
 
 
 ---
